@@ -7,6 +7,10 @@ const express = require("express");
 // Initialize express
 const app = express();
 const PORT = 3000;
+
+const cors = require('cors')
+app.use(cors())
+
 // parse JSON
 app.use(express.json());
 // parse URL encoded data
