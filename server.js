@@ -26,23 +26,33 @@ const config = dotenv.config().parsed;
 const Magento = {
     login: () => {
         return axios({
-        method: 'post',
-        url: `${config.MAGENTO_URL}${config.MAGENTO_URL_AUTH}`, 
-        data: {
-            username: config.MAGENTO_USERNAME,
-            password: config.MAGENTO_PASSWORD
-        },
-        headers: { "Content-Type": "application/json" }
+            method: 'post',
+            url: `${config.MAGENTO_URL}${config.MAGENTO_URL_AUTH}`, 
+            data: {
+                username: config.MAGENTO_USERNAME,
+                password: config.MAGENTO_PASSWORD
+            },
+            headers: { "Content-Type": "application/json" }
         })
     },
     getCartsByCustomerId: (customerId) => {
         return axios({
-        method: 'get',
-        url: `${config.MAGENTO_URL}${config.MAGENTO_URL_CART}?searchCriteria[filter_groups][0][filters][0][field]=customer_id&searchCriteria[filter_groups][0][filters][0][value]=${customerId}`, 
-        headers: { 
-            "Authorization": `Bearer ${config.access_token}`,
-            "Content-Type": "application/json"
-        }
+            method: 'get',
+            url: `${config.MAGENTO_URL}${config.MAGENTO_URL_CART}?searchCriteria[filter_groups][0][filters][0][field]=customer_id&searchCriteria[filter_groups][0][filters][0][value]=${customerId}`, 
+            headers: { 
+                "Authorization": `Bearer ${config.access_token}`,
+                "Content-Type": "application/json"
+            }
+        })
+    },
+    getProductBySKU: (productSKU) => {
+        return axios({
+            method: 'get',
+            url: `${config.MAGENTO_URL}${config.MAGENTO_URL_PRODUCT}/${productSKU}`, 
+            headers: { 
+                "Authorization": `Bearer ${config.access_token}`,
+                "Content-Type": "application/json"
+            }
         })
     }
 }
@@ -57,6 +67,25 @@ app.get('/magento/getcartbycustomerid/:customer_id', async (req, res) => {
 
         const cart = await Magento.getCartsByCustomerId(customer_id);
         res.status(200).json(cart.data);            
+    }
+    catch(error){
+        console.log(error)
+        return res.status(400).json({
+            message: error
+        });
+    }
+});
+
+app.get('/magento/getproductbysku/:product_sku', async (req, res) => {
+    const product_sku = req.params.product_sku;
+    console.log("GetProductBySKU " + product_sku)
+
+    try{
+        const login = await Magento.login();
+        config.access_token = login.data;
+
+        const product = await Magento.getProductBySKU(product_sku);
+        res.status(200).json(product.data);            
     }
     catch(error){
         console.log(error)
