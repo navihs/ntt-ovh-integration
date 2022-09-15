@@ -43,7 +43,7 @@ const Magento = {
     }
 }
   
-app.get('/magento/getcartbycustomerid:customer_id', async (req, res) => {
+app.get('/magento/getcartbycustomerid/customer_id', async (req, res) => {
     const customer_id = req.params.customer_id;
     console.log("GetCartByCustomerId " + customer_id)
 
