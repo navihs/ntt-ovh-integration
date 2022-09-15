@@ -64,14 +64,4 @@ app.get('/magento/getcartbycustomerid:customer_id', async (req, res) => {
 
 async function start() {
     
-    try{
-        const login = await Magento.login();
-        config.access_token = login.data;
-
-        const cart = await Magento.getCartsByCustomerId(3);
-        console.log(cart.data);
-    }
-    catch(error){
-        console.log(error)
-    }
 }
