@@ -139,7 +139,7 @@ app.get('/redis/:key/search', async(req, res) => {
         key: Object.keys(req.query)[0],
         value: req.query[Object.keys(req.query)[0]]
     }
-    console.log("SearchRedisKey " + key);
+    console.log("SearchRedisKey " + key + JSON.stringify(searchCriteria));
  
     try{
         let value = await client.get(key);
