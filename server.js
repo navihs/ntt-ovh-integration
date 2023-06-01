@@ -133,6 +133,35 @@ app.post('/redis/:key', async (req, res) => {
    res.sendStatus(200);
 });
 
+app.get('/redis/:key/search', async(req, res) => {
+    const key = req.params.key;
+    const searchCriteria = {
+        key: Object.keys(req.query)[0],
+        value: req.query[Object.keys(req.query)[0]]
+    }
+    console.log("SearchRedisKey " + key);
+ 
+    try{
+        let value = await client.get(key);
+        let table = JSON.parse(value);
+
+        let results = table.filter(item => {
+            item[searchCriteria.key] == searchCriteria.value
+        })
+
+        res.status(200).json({
+            results: results,
+            totalHits: results.length
+        });
+    }
+    catch(error){
+       console.log(error);
+       return res.status(400).json({
+         message: error
+       });
+    }
+ });
+
 async function start() {
     // Connect to Redis
     client = createClient({
